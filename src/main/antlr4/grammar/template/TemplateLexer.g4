@@ -15,7 +15,6 @@ HTML_COMMENT       : '<!--' .*? '-->' ;                    // Matches standard H
 HTML_CONDITIONAL_COMMENT
                    : '<!' .*? '>' ;                        // Matches IE conditional comments or declarations.
 
-// --- STYLE opening tags ---
 
 STYLE_OPEN         : '<' [sS][tT][yY][lL][eE] ( ~'>' )* '>'
                      -> pushMode(STYLE_MODE);              // Matches a <style> opening tag and enters style mode.
@@ -120,3 +119,5 @@ STYLE_CONTENT
 // --- Fallback ---
 STYLE_CHAR_FALLBACK
     : . ;                                                   // Fallback rule to consume any remaining character.
+
+

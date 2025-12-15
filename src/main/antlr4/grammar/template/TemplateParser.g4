@@ -43,6 +43,7 @@ htmlContent
     : htmlChardata?
       (
         ( htmlElement
+        | CDATA
         | htmlComment
         | jinjaBlock
         | jinjaExpr
@@ -116,3 +117,4 @@ jinjaComment
     : JINJA_COMMENT_OPEN JINJA_COMMENT_CONTENT* JINJA_COMMENT_CLOSE
       #JinjaCommentRule
     ;
+
