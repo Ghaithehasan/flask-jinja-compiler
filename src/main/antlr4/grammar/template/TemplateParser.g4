@@ -5,82 +5,114 @@ options {
 }
 
 // ----------------------------------------------------------------------
-// Main Document Structure
+// Root rule: represents the full HTML document
 // ----------------------------------------------------------------------
-
 htmlDocument
-    : scriptletOrSeaWs* XML? scriptletOrSeaWs* DTD? scriptletOrSeaWs* htmlElements* EOF
+    : htmlElements* EOF
+      #Document
     ;
 
-scriptletOrSeaWs
-    : SCRIPTLET
-    | SEA_WS
-    ;
 
+
+// ----------------------------------------------------------------------
+// Top-level HTML elements
+// ----------------------------------------------------------------------
 htmlElements
     : htmlMisc* htmlElement htmlMisc*
+      #Elements
     ;
 
 // ----------------------------------------------------------------------
-// HTML Element Rules
+// Single HTML element
 // ----------------------------------------------------------------------
-
 htmlElement
     : TAG_OPEN TAG_NAME htmlAttribute* (
         TAG_CLOSE (htmlContent TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE)?
         | TAG_SLASH_CLOSE
-    )
-    | SCRIPTLET
-    | script
-    | style
-    | jinjaBlock // Allow Jinja blocks at the top level
-    | jinjaExpr  // Allow Jinja expressions at the top level
-    | jinjaComment // Allow Jinja comments at the top level
+      )                       #TagElement
+    | style                   #StyleElement
+    | jinjaBlock              #JinjaBlockElement
+    | jinjaExpr               #JinjaExprElement
+    | jinjaComment            #JinjaCommentElement
     ;
 
+// ----------------------------------------------------------------------
+// Content inside an HTML element
+// ----------------------------------------------------------------------
 htmlContent
-    : htmlChardata? ((htmlElement | CDATA | htmlComment | jinjaBlock | jinjaExpr | jinjaComment) htmlChardata?)*
+    : htmlChardata?
+      (
+        ( htmlElement
+        | htmlComment
+        | jinjaBlock
+        | jinjaExpr
+        | jinjaComment
+        )
+        htmlChardata?
+      )*
+      #Content
     ;
 
+// ----------------------------------------------------------------------
+// HTML attribute
+// ----------------------------------------------------------------------
 htmlAttribute
     : TAG_NAME (TAG_EQUALS ATTVALUE_VALUE)?
+      #Attribute
     ;
 
+// ----------------------------------------------------------------------
+// Character data
+// ----------------------------------------------------------------------
 htmlChardata
-    : HTML_TEXT
-    | SEA_WS
+    : HTML_TEXT   #TextContent
+    | SEA_WS      #WhitespaceContent
     ;
 
+// ----------------------------------------------------------------------
+// Misc content between elements
+// ----------------------------------------------------------------------
 htmlMisc
-    : htmlComment
-    | SEA_WS
+    : htmlComment #MiscComment
+    | SEA_WS      #MiscWhitespace
     ;
 
+// ----------------------------------------------------------------------
+// HTML comments
+// ----------------------------------------------------------------------
 htmlComment
-    : HTML_COMMENT
-    | HTML_CONDITIONAL_COMMENT
+    : HTML_COMMENT               #StandardComment
+    | HTML_CONDITIONAL_COMMENT   #ConditionalComment
     ;
 
-script
-    : SCRIPT_OPEN (SCRIPT_BODY | SCRIPT_SHORT_BODY) SCRIPT_CLOSE
-    ;
-
+// ----------------------------------------------------------------------
+// Style block
+// ----------------------------------------------------------------------
 style
-    : STYLE_OPEN (STYLE_BODY | STYLE_SHORT_BODY) STYLE_CLOSE
+    : STYLE_OPEN (STYLE_CONTENT | STYLE_CHAR_FALLBACK)* STYLE_CLOSE
+      #StyleBlock
     ;
 
 // ----------------------------------------------------------------------
-// Jinja2 Templating Rules
+// Jinja block
 // ----------------------------------------------------------------------
-
 jinjaBlock
     : JINJA_BLOCK_OPEN JINJA_BLOCK_CONTENT* JINJA_BLOCK_CLOSE
+      #JinjaBlockRule
     ;
 
+// ----------------------------------------------------------------------
+// Jinja expression
+// ----------------------------------------------------------------------
 jinjaExpr
     : JINJA_EXPR_OPEN JINJA_EXPR_CONTENT* JINJA_EXPR_CLOSE
+      #JinjaExpression
     ;
 
+// ----------------------------------------------------------------------
+// Jinja comment
+// ----------------------------------------------------------------------
 jinjaComment
     : JINJA_COMMENT_OPEN JINJA_COMMENT_CONTENT* JINJA_COMMENT_CLOSE
+      #JinjaCommentRule
     ;
