@@ -73,3 +73,6 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+!src/visitor/
+!src/visitor/BaseVisitor.java
