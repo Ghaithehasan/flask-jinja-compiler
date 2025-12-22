@@ -12,6 +12,7 @@ options { superClass=FlaskLexerBase; }
 AND      : 'and' ;
 AT       : '@' ;
 AS       : 'as' ;
+ASSERT     : 'assert' ;
 BREAK    : 'break' ;
 CLASS    : 'class' ;
 CONTINUE : 'continue' ;

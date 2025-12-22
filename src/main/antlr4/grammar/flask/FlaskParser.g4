@@ -29,9 +29,11 @@ small_stmt
     | expression_statement
     | returnStatement
     | passStatement
+    | breakStatement
+    | continueStatement
+    | delStatement
+    | assertStatement
     ;
-
-
 
 returnStatement
     : RETURN expression?
@@ -39,6 +41,26 @@ returnStatement
 
 passStatement
     : PASS
+    ;
+
+breakStatement
+    : BREAK
+    ;
+
+continueStatement
+    : CONTINUE
+    ;
+
+delStatement
+    : DEL targetList
+    ;
+
+targetList
+    : target (COMMA target)*
+    ;
+
+assertStatement
+    : ASSERT expression (COMMA expression)?
     ;
 
 expression_statement
