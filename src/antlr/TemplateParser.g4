@@ -1,5 +1,9 @@
 parser grammar TemplateParser;
 
+@header {
+package antlr;
+}
+
 options {
     tokenVocab = TemplateLexer;
 }
@@ -43,7 +47,6 @@ htmlContent
     : htmlChardata?
       (
         ( htmlElement
-        | CDATA
         | htmlComment
         | jinjaBlock
         | jinjaExpr
@@ -116,5 +119,18 @@ jinjaExpr
 jinjaComment
     : JINJA_COMMENT_OPEN JINJA_COMMENT_CONTENT* JINJA_COMMENT_CLOSE
       #JinjaCommentRule
+    ;
+
+// ----------------------------------------------------------------------
+// Stub rules for base visitor compatibility (not used in grammar)
+// ----------------------------------------------------------------------
+scriptletOrSeaWs
+    : SEA_WS
+      #ScriptletOrSeaWsRule
+    ;
+
+script
+    : // Empty rule - not used
+      #ScriptRule
     ;
 

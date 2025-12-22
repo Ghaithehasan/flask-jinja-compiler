@@ -44,7 +44,7 @@ build/
 
 # ANTLR4 Generated Files (مهم!)
 gen/
-src/main/java/**/generated/
+src/Main/java/**/generated/
 **/*Lexer.java
 **/*Parser.java
 **/*Visitor.java
