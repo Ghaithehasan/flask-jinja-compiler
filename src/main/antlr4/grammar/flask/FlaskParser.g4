@@ -33,6 +33,7 @@ small_stmt
     | continueStatement
     | delStatement
     | assertStatement
+    | globalStatement
     ;
 
 returnStatement
@@ -62,6 +63,11 @@ targetList
 assertStatement
     : ASSERT expression (COMMA expression)?
     ;
+
+globalStatement
+    : GLOBAL IDENTIFIER (COMMA IDENTIFIER)*
+    ;
+
 
 expression_statement
     : expression
