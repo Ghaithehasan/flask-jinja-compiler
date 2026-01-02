@@ -27,10 +27,6 @@ public class HtmlCommentNode extends ASTNode {
         return comment;
     }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
 
     @Override
     public String printTree(int indent) {

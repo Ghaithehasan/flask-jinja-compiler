@@ -79,15 +79,6 @@ public abstract class ASTNode {
     }
 
     /**
-     * Accepts a visitor for tree traversal (Visitor pattern).
-     *
-     * @param visitor the visitor to accept
-     * @param <T>     the return type of the visitor
-     * @return the result of the visitor operation
-     */
-    public abstract <T> T accept(ASTVisitor<T> visitor);
-
-    /**
      * Pretty-prints the AST tree structure with indentation.
      *
      * @param indent the current indentation level

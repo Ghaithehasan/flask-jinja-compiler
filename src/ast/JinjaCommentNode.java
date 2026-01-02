@@ -36,10 +36,7 @@ public class JinjaCommentNode extends ASTNode {
         this.commentContent = commentContent;
     }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
+
 
     @Override
     public String printTree(int indent) {

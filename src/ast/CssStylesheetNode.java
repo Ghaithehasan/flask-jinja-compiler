@@ -1,17 +1,17 @@
 package ast;
 
 /**
- * Represents a content container node.
- * Used to group child elements and text nodes within an HTML element.
+ * Represents the root of a parsed CSS stylesheet AST.
+ * Contains CSS rules as children.
  */
-public class ContentNode extends ASTNode {
+public class CssStylesheetNode extends ASTNode {
     /**
-     * Constructs a content node.
+     * Constructs a CSS stylesheet node.
      *
-     * @param lineNumber the line number where the content appears
+     * @param lineNumber the line number where the stylesheet appears
      */
-    public ContentNode(int lineNumber) {
-        super("Content", lineNumber);
+    public CssStylesheetNode(int lineNumber) {
+        super("CssStylesheet", lineNumber);
     }
 
     @Override
@@ -35,7 +35,5 @@ public class ContentNode extends ASTNode {
 
         return sb.toString();
     }
-
-
 }
 

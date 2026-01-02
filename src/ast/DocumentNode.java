@@ -21,7 +21,7 @@ public class DocumentNode extends ASTNode {
             indentBuilder.append("  ");
         }
         String indentStr = indentBuilder.toString();
-        sb.append(indentStr).append("DocumentNode");
+        sb.append(indentStr).append(nodeName);
         if (lineNumber > 0) {
             sb.append(" (line ").append(lineNumber).append(")");
         }
@@ -34,9 +34,6 @@ public class DocumentNode extends ASTNode {
         return sb.toString();
     }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
+
 }
 

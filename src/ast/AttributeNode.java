@@ -39,10 +39,7 @@ public class AttributeNode extends ASTNode {
         return attributeValue;
     }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
+
 
     @Override
     public String printTree(int indent) {

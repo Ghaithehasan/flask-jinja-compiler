@@ -3,66 +3,25 @@ package visitor;
 import antlr.TemplateParser;
 import antlr.TemplateParserBaseVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import ast.*;
 
 
 public class BaseVisitor extends TemplateParserBaseVisitor<ASTNode> {
-    @Override
-    public ASTNode visitHtmlDocument(TemplateParser.HtmlDocumentContext ctx) {
-        return visitChildren(ctx);
+
+    private final CssParser cssParser;
+
+    public BaseVisitor() {
+        this.cssParser = new CssParser();
     }
 
-    @Override
-    public ASTNode visitHtmlElements(TemplateParser.HtmlElementsContext ctx) {
-        return null;
-    }
 
-    @Override
-    public ASTNode visitHtmlElement(TemplateParser.HtmlElementContext ctx) {
-        return null;
-    }
-
-    @Override
-    public ASTNode visitHtmlContent(TemplateParser.HtmlContentContext ctx) {
-        return null;
-    }
-
-    @Override
-    public ASTNode visitHtmlAttribute(TemplateParser.HtmlAttributeContext ctx) {
-        return null;
-    }
-
-    @Override
-    public ASTNode visitHtmlChardata(TemplateParser.HtmlChardataContext ctx) {
-        return null;
-    }
-
-    @Override
-    public ASTNode visitHtmlComment(TemplateParser.HtmlCommentContext ctx) {
-        return null;
-    }
-
-    @Override
-    public ASTNode visitStyle(TemplateParser.StyleContext ctx) {
-        return null;
-    }
 
     private int getLineNumber(ParserRuleContext ctx) {
         if (ctx != null && ctx.start != null) {
             return ctx.start.getLine();
         }
         return 1;
-    }
-
-    private int getLineNumber(Token token) {
-        if (token != null) return token.getLine();
-        return 1;
-    }
-
-    private String getText(TerminalNode node) {
-        return node != null ? node.getText() : "";
     }
 
     /* ------------------ Root / Top-level ------------------ */
@@ -286,7 +245,6 @@ public class BaseVisitor extends TemplateParserBaseVisitor<ASTNode> {
 
         // STYLE_CONTENT tokens
         for (TerminalNode tn : ctx.getTokens(TemplateParser.STYLE_CONTENT)) {
-
             cssContent.append(tn.getText());
         }
 
@@ -296,7 +254,17 @@ public class BaseVisitor extends TemplateParserBaseVisitor<ASTNode> {
         }
 
         if (cssContent.length() > 0) {
-            styleNode.addChild(new CssNode(cssContent.toString(), getLineNumber(ctx)));
+            String rawCss = cssContent.toString();
+            int lineNumber = getLineNumber(ctx);
+            CssNode cssNode = new CssNode(rawCss, lineNumber);
+            
+            // Parse CSS and build structured AST using CssParser
+            CssStylesheetNode stylesheetNode = cssParser.parse(rawCss, lineNumber);
+            if (stylesheetNode != null) {
+                cssNode.addChild(stylesheetNode);
+            }
+            
+            styleNode.addChild(cssNode);
         }
         return styleNode;
     }
@@ -332,26 +300,58 @@ public class BaseVisitor extends TemplateParserBaseVisitor<ASTNode> {
 
     /* ------------------ htmlComment / jinjaElement delegations ------------------ */
 
-    @Override
     public ASTNode visitJinjaBlock(TemplateParser.JinjaBlockContext ctx) {
         // fallback: if generic jinjaBlock context reached, delegate to children
         return visitChildren(ctx);
     }
 
-    @Override
     public ASTNode visitJinjaExpr(TemplateParser.JinjaExprContext ctx) {
         return visitChildren(ctx);
     }
-
-    @Override
     public ASTNode visitJinjaComment(TemplateParser.JinjaCommentContext ctx) {
         return visitChildren(ctx);
     }
 
-    @Override
+
     public ASTNode visitHtmlMisc(TemplateParser.HtmlMiscContext ctx) {
         return null;
     }
 
+
+    public ASTNode visitHtmlElements(TemplateParser.HtmlElementsContext ctx) {
+        return null;
+    }
+
+
+    public ASTNode visitHtmlElement(TemplateParser.HtmlElementContext ctx) {
+        return null;
+    }
+
+
+    public ASTNode visitHtmlContent(TemplateParser.HtmlContentContext ctx) {
+        return null;
+    }
+
+
+    public ASTNode visitHtmlAttribute(TemplateParser.HtmlAttributeContext ctx) {
+        return null;
+    }
+
+
+    public ASTNode visitHtmlChardata(TemplateParser.HtmlChardataContext ctx
+    ) {
+        return null;
+    }
+
+    public ASTNode visitHtmlComment(TemplateParser.HtmlCommentContext ctx) {
+        return null;
+    }
+
+    public ASTNode visitStyle(TemplateParser.StyleContext ctx) {
+        return null;
+    }
+    public ASTNode visitHtmlDocument(TemplateParser.HtmlDocumentContext ctx) {
+        return visitChildren(ctx);
+    }
 
 }

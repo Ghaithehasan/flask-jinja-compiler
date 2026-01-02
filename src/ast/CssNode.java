@@ -2,7 +2,8 @@ package ast;
 
 /**
  * Represents CSS content within a style block.
- * Contains raw CSS text.
+ * Contains raw CSS text and may have a child CssStylesheetNode containing
+ * the parsed CSS AST structure.
  */
 public class CssNode extends ASTNode {
     private String cssContent;
@@ -36,10 +37,7 @@ public class CssNode extends ASTNode {
         this.cssContent = cssContent;
     }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
+
 
     @Override
     public String printTree(int indent) {
@@ -50,13 +48,9 @@ public class CssNode extends ASTNode {
         }
         String indentStr = indentBuilder.toString();
 
-        sb.append(indentStr).append("CssNode");
+        sb.append(indentStr).append(nodeName);
         if (cssContent != null && cssContent.length() > 0) {
-            String displayCss = cssContent;
-            if (displayCss.length() > 50) {
-                displayCss = displayCss.substring(0, 47) + "...";
-            }
-            sb.append(" \"").append(displayCss.replace("\n", "\\n").replace("\r", "\\r")).append("\"");
+            sb.append(" (raw css)");
         }
         if (lineNumber > 0) {
             sb.append(" (line ").append(lineNumber).append(")");

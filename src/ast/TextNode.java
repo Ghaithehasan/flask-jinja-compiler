@@ -36,13 +36,18 @@ public class TextNode extends ASTNode {
         this.text = text;
     }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
+
 
     @Override
     public String printTree(int indent) {
+        // Filter out whitespace-only text (spaces, \r\n, etc.)
+        String trimmedText = text != null ? text.trim() : "";
+        
+        // If text is empty or only whitespace, don't print anything
+        if (trimmedText.isEmpty()) {
+            return "";
+        }
+        
         StringBuilder sb = new StringBuilder();
         StringBuilder indentBuilder = new StringBuilder();
         for (int i = 0; i < indent; i++) {
@@ -51,14 +56,13 @@ public class TextNode extends ASTNode {
         String indentStr = indentBuilder.toString();
 
         sb.append(indentStr).append("TextNode");
-        String displayText = text;
-        if (displayText != null && displayText.length() > 0) {
-            // Truncate long text for display
-            if (displayText.length() > 50) {
-                displayText = displayText.substring(0, 47) + "...";
-            }
-            sb.append(" \"").append(displayText.replace("\n", "\\n").replace("\r", "\\r")).append("\"");
+        String displayText = trimmedText;
+        // Truncate long text for display
+        if (displayText.length() > 50) {
+            displayText = displayText.substring(0, 47) + "...";
         }
+        sb.append(" \"").append(displayText).append("\"");
+        
         if (lineNumber > 0) {
             sb.append(" (line ").append(lineNumber).append(")");
         }

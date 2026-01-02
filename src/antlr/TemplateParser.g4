@@ -16,8 +16,6 @@ htmlDocument
       #Document
     ;
 
-
-
 // ----------------------------------------------------------------------
 // Top-level HTML elements
 // ----------------------------------------------------------------------
@@ -121,16 +119,5 @@ jinjaComment
       #JinjaCommentRule
     ;
 
-// ----------------------------------------------------------------------
-// Stub rules for base visitor compatibility (not used in grammar)
-// ----------------------------------------------------------------------
-scriptletOrSeaWs
-    : SEA_WS
-      #ScriptletOrSeaWsRule
-    ;
 
-script
-    : // Empty rule - not used
-      #ScriptRule
-    ;
 

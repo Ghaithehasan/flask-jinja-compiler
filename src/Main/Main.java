@@ -2,15 +2,18 @@ package Main;
 
 import antlr.TemplateLexer;
 import antlr.TemplateParser;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTree;
-import visitor.BaseVisitor;
 import ast.ASTNode;
 import ast.DocumentNode;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import symbol.SymbolTable;
+import symbol.SymbolTableBuilder;
+import visitor.BaseVisitor;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Main driver class for the Flask-Jinja template compiler.
@@ -38,9 +41,9 @@ public class Main {
         System.out.println();
 
         try {
-            // Read input file
+            // Read input file with UTF-8 encoding to properly handle Unicode characters (Arabic, etc.)
             InputStream inputStream = new FileInputStream(inputFile);
-            CharStream charStream = CharStreams.fromStream(inputStream);
+            CharStream charStream = CharStreams.fromStream(inputStream, StandardCharsets.UTF_8);
 
             // Create lexer
             TemplateLexer lexer = new TemplateLexer(charStream);
@@ -88,15 +91,8 @@ public class Main {
                 }
             }
 
-            // Print the AST tree
-            System.out.println("AST Tree Structure:");
-            System.out.println("==================");
-
-            if (astRoot != null) {
-                System.out.println(astRoot.printTree());
-            } else {
-                System.out.println("(Empty AST)");
-            }
+            // Print the AST tree and build symbol table
+            printASTAndSymbolTable(astRoot);
 
             System.out.println();
             System.out.println("Compilation completed successfully.");
@@ -119,5 +115,38 @@ public class Main {
      */
     public static DocumentNode getAstRoot() {
         return astRoot;
+    }
+
+    /**
+     * Driver method that prints the full AST tree and the complete Symbol Table.
+     * This method builds the symbol table by traversing the AST, then prints both
+     * the AST structure and the symbol table in a readable format.
+     *
+     * @param root the root AST node (DocumentNode)
+     */
+    public static void printASTAndSymbolTable(DocumentNode root) {
+        // Print the AST tree
+        System.out.println("AST Tree Structure:");
+        System.out.println("==================");
+
+        if (root != null) {
+            System.out.println(root.printTree());
+        } else {
+            System.out.println("(Empty AST)");
+        }
+
+        System.out.println();
+
+        // Build symbol table by traversing AST
+        if (root != null) {
+            System.out.println("Building Symbol Table...");
+            SymbolTableBuilder builder = new SymbolTableBuilder();
+            SymbolTable symbolTable = builder.build(root);
+
+            // Print the symbol table
+            System.out.println(symbolTable.printSymbolTable());
+        } else {
+            System.out.println("Cannot build symbol table: AST is empty.");
+        }
     }
 }

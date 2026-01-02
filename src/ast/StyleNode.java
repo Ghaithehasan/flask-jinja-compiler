@@ -23,7 +23,7 @@ public class StyleNode extends ASTNode {
         }
         String indentStr = indentBuilder.toString();
 
-        sb.append(indentStr).append("StyleNode");
+        sb.append(indentStr).append(nodeName);
         if (lineNumber > 0) {
             sb.append(" (line ").append(lineNumber).append(")");
         }
@@ -36,9 +36,6 @@ public class StyleNode extends ASTNode {
         return sb.toString();
     }
 
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
+
 }
 

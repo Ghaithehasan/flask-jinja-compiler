@@ -1,17 +1,17 @@
 package ast;
 
 /**
- * Represents a content container node.
- * Used to group child elements and text nodes within an HTML element.
+ * Represents a list of CSS selectors (e.g., "div, span, p").
+ * Contains CssSelectorNode children, one for each selector in the comma-separated list.
  */
-public class ContentNode extends ASTNode {
+public class CssSelectorListNode extends ASTNode {
     /**
-     * Constructs a content node.
+     * Constructs a CSS selector list node.
      *
-     * @param lineNumber the line number where the content appears
+     * @param lineNumber the line number where the selector list appears
      */
-    public ContentNode(int lineNumber) {
-        super("Content", lineNumber);
+    public CssSelectorListNode(int lineNumber) {
+        super("CssSelectorList", lineNumber);
     }
 
     @Override
@@ -35,7 +35,5 @@ public class ContentNode extends ASTNode {
 
         return sb.toString();
     }
-
-
 }
 
